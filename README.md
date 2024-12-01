@@ -25,9 +25,9 @@ Este plugin permite crear y gestionar popups personalizables en WordPress, con l
 
 ## Requisitos
 
-- WordPress 5.0 o superior
-- PHP 7.4 o superior
-- MySQL 5.6 o superior
+- WordPress 6.7 o superior
+- PHP 8.4 o superior
+- MariaDB 11.7 o superior
 - Servidor CodeIgniter configurado (para la integración)
 
 ## Instalación
