@@ -115,8 +115,7 @@ integrated-popup/
 Para soporte técnico o reportar problemas:
 
 1. Abre un issue en el repositorio
-2. Envía un correo a support@example.com
-3. Visita nuestra documentación en línea
+2. Visita nuestra documentación en línea
 
 ## Contribuir
 
@@ -145,9 +144,6 @@ Este plugin está licenciado bajo la GPL v2 o posterior.
 - Mejoras en la interfaz de usuario
 - Optimización de rendimiento
 
-## Créditos
-
-Desarrollado por [Tu Nombre/Empresa]
 
 ## FAQ
 
