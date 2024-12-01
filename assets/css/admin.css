@@ -1,0 +1,256 @@
+/* Estilos generales */
+.wrap {
+    max-width: 1200px;
+    margin: 20px auto;
+}
+
+/* Metaboxes y contenedores */
+.metabox-holder {
+    margin-top: 20px;
+}
+
+.postbox {
+    margin-bottom: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.postbox .hndle {
+    padding: 12px 15px;
+    margin: 0;
+    border-bottom: 1px solid #ccd0d4;
+    background: #f8f9fa;
+    cursor: default;
+}
+
+.postbox .inside {
+    padding: 15px;
+    margin: 0;
+}
+
+/* Campos de formulario */
+.form-field {
+    margin: 15px 0;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field select {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-field input[type="color"] {
+    padding: 0;
+    width: 50px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+/* Selector de páginas */
+#page-selector {
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 3px;
+}
+
+#page-search {
+    margin-bottom: 10px;
+}
+
+#page-list {
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    padding: 10px;
+}
+
+#page-list label {
+    display: block;
+    padding: 5px;
+    margin: 0;
+    cursor: pointer;
+}
+
+#page-list label:hover {
+    background: #f0f0f1;
+}
+
+/* Lista de popups */
+.wp-list-table .column-title {
+    width: 30%;
+}
+
+.wp-list-table .column-status {
+    width: 15%;
+}
+
+.wp-list-table .column-views {
+    width: 10%;
+    text-align: center;
+}
+
+.wp-list-table .column-created_at {
+    width: 15%;
+}
+
+/* Estados de popup */
+.popup-status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.popup-status.active {
+    background: #dff0d8;
+    color: #3c763d;
+}
+
+.popup-status.inactive {
+    background: #f2dede;
+    color: #a94442;
+}
+
+/* Editor de contenido */
+.wp-editor-wrap {
+    margin-bottom: 20px;
+}
+
+/* Mensajes de notificación */
+.notice {
+    margin: 15px 0;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .form-field input[type="text"],
+    .form-field input[type="number"],
+    .form-field select {
+        max-width: 100%;
+    }
+
+    .wp-list-table .column-title {
+        width: auto;
+    }
+
+    .wp-list-table .column-status,
+    .wp-list-table .column-views,
+    .wp-list-table .column-created_at {
+        width: auto;
+    }
+}
+
+/* Tooltips */
+.popup-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    cursor: help;
+}
+
+.popup-tooltip .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #666;
+}
+
+.popup-tooltip:hover .tooltip-content {
+    display: block;
+}
+
+.popup-tooltip .tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
+    background: #333;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.popup-tooltip .tooltip-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+/* Previsualización del popup */
+.popup-preview {
+    margin: 20px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border: 1px dashed #ccd0d4;
+    border-radius: 4px;
+}
+
+.popup-preview-title {
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.popup-preview-content {
+    min-height: 200px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    padding: 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+}
+
+/* Botones de acción */
+.popup-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.popup-actions .button {
+    margin-right: 10px;
+}
+
+/* Ajustes de configuración */
+.settings-section {
+    margin-bottom: 30px;
+}
+
+.settings-section h2 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.settings-field {
+    margin-bottom: 20px;
+}
+
+.settings-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.settings-field .description {
+    margin-top: 5px;
+    color: #666;
+    font-style: italic;
+}
