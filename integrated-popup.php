@@ -6,7 +6,6 @@
  * Author: GS
  * Text Domain: integrated-popup
  */
-
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -19,6 +18,12 @@ define('INTEGRATED_POPUP_URL', plugin_dir_url(__FILE__));
 
 // Cargar el autoloader
 require_once INTEGRATED_POPUP_PATH . 'includes/class-autoloader.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-api-client.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-admin.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-admin-menu.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-database.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-core.php';
+require_once INTEGRATED_POPUP_PATH . 'includes/class-loader.php';
 
 // Registrar el autoloader
 IntegratedPopup_Autoloader::register();
@@ -31,13 +36,6 @@ register_deactivation_hook(__FILE__, array('IntegratedPopup_Deactivator', 'deact
 
 // Iniciar el plugin
 function integrated_popup_init() {
-    // Asegurarse de que todas las clases base estén cargadas
-    require_once INTEGRATED_POPUP_PATH . 'includes/class-loader.php';
-    require_once INTEGRATED_POPUP_PATH . 'includes/class-admin.php';
-    require_once INTEGRATED_POPUP_PATH . 'includes/class-admin-menu.php';
-    require_once INTEGRATED_POPUP_PATH . 'includes/class-database.php';
-    require_once INTEGRATED_POPUP_PATH . 'includes/class-core.php';
-
     $plugin = new IntegratedPopup_Core();
     $plugin->run();
 }

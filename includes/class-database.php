@@ -15,14 +15,13 @@ class IntegratedPopup_Database {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE {$this->table_name} (
+        $sql = "CREATE TABLE IF NOT EXISTS {$this->table_name} (
             id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             content LONGTEXT NOT NULL,
             style LONGTEXT NOT NULL,
-            conditions LONGTEXT NOT NULL,
-            status VARCHAR(20) DEFAULT 'active',
-            views INT DEFAULT 0,
+            view_name LONGTEXT NOT NULL,
+            status TINYINT(1) DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) $charset_collate;";
@@ -30,96 +29,103 @@ class IntegratedPopup_Database {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql);
     }
+    public function toggle_status($id) {
+        global $wpdb;
+        
+        // Primero obtenemos el estado actual
+        $current_status = $wpdb->get_var($wpdb->prepare(
+            "SELECT status FROM {$this->table_name} WHERE id = %d",
+            $id
+        ));
+
+        // Cambiamos el estado (si era 1 pasa a 0 y viceversa)
+        $new_status = $current_status == 1 ? 0 : 1;
+        
+        $result = $wpdb->update(
+            $this->table_name,
+            array('status' => $new_status),
+            array('id' => $id),
+            array('%d'),
+            array('%d')
+        );
+
+        return $result !== false ? $new_status : false;
+    }
+
+    public function get_all_popups() {
+        global $wpdb;
+        
+        return $wpdb->get_results(
+            "SELECT * FROM {$this->table_name} ORDER BY created_at DESC",
+            ARRAY_A
+        );
+    }
 
     public function save_popup($data) {
         global $wpdb;
-
+    
         $defaults = array(
             'title' => '',
             'content' => '',
             'style' => '{}',
-            'conditions' => '{}',
-            'status' => 'active'
+            'view_name' => '[]',
+            'status' => 1
         );
-
+    
         $data = wp_parse_args($data, $defaults);
-
-        // Asegurar que los campos JSON sean válidos
+    // Sanitizar datos
+    $data = array(
+        'title' => sanitize_text_field($data['title']),
+        'content' => wp_kses_post($data['content']),
+        'style' => is_string($data['style']) ? $data['style'] : wp_json_encode($data['style']),
+        'view_name' => is_string($data['view_name']) ? $data['view_name'] : wp_json_encode($data['view_name']),
+        'status' => absint($data['status'])
+    );
+        // Asegurar que los campos JSON y arrays sean guardados correctamente
         $data['style'] = is_string($data['style']) ? $data['style'] : wp_json_encode($data['style']);
-        $data['conditions'] = is_string($data['conditions']) ? $data['conditions'] : wp_json_encode($data['conditions']);
-
-        // Sanitizar datos
-        $data = array(
-            'title' => sanitize_text_field($data['title']),
-            'content' => wp_kses_post($data['content']),
-            'style' => $data['style'],
-            'conditions' => $data['conditions'],
-            'status' => sanitize_text_field($data['status'])
-        );
-
+        $data['view_name'] = is_array($data['view_name']) ? wp_json_encode($data['view_name']) : $data['view_name'];
+    
         // Si hay un ID, actualizar, si no, insertar
         if (!empty($data['id'])) {
             $result = $wpdb->update(
                 $this->table_name,
                 $data,
                 array('id' => $data['id']),
-                array('%s', '%s', '%s', '%s', '%s'),
+                array('%s', '%s', '%s', '%s'),
                 array('%d')
             );
         } else {
             $result = $wpdb->insert(
                 $this->table_name,
                 $data,
-                array('%s', '%s', '%s', '%s', '%s')
+                array('%s', '%s', '%s', '%s')
             );
         }
 
         return $result ? ($data['id'] ?? $wpdb->insert_id) : false;
-    }
 
-    public function get_popup($id) {
+    }
+    
+
+    public function get_popup($popup_id) {
         global $wpdb;
         
-        $popup = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$this->table_name} WHERE id = %d", $id),
+        return $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$this->table_name} WHERE id = %d",
+                $popup_id
+            ),
             ARRAY_A
         );
-
-        if ($popup) {
-            $popup['style'] = json_decode($popup['style'], true);
-            $popup['conditions'] = json_decode($popup['conditions'], true);
-        }
-
-        return $popup;
     }
-
     public function get_active_popups() {
         global $wpdb;
         
-        $popups = $wpdb->get_results(
-            "SELECT * FROM {$this->table_name} WHERE status = 'active' ORDER BY created_at DESC",
+        return $wpdb->get_results(
+            "SELECT * FROM {$this->table_name} WHERE status = 1 ORDER BY created_at DESC",
             ARRAY_A
         );
-
-        foreach ($popups as &$popup) {
-            $popup['style'] = json_decode($popup['style'], true);
-            $popup['conditions'] = json_decode($popup['conditions'], true);
-        }
-
-        return $popups;
     }
-
-    public function increment_views($id) {
-        global $wpdb;
-        
-        return $wpdb->query(
-            $wpdb->prepare(
-                "UPDATE {$this->table_name} SET views = views + 1 WHERE id = %d",
-                $id
-            )
-        );
-    }
-
     public function delete_popup($id) {
         global $wpdb;
         
@@ -130,14 +136,27 @@ class IntegratedPopup_Database {
         );
     }
 
+    public function update_popup($id, $data) {
+        global $wpdb;
+        
+        $data['updated_at'] = current_time('mysql');
+        
+        return $wpdb->update(
+            $this->table_name,
+            $data,
+            array('id' => $id),
+            array('%s', '%s', '%s', '%s', '%s'),
+            array('%d')
+        );
+    }
     public function update_status($id, $status) {
         global $wpdb;
         
         return $wpdb->update(
             $this->table_name,
-            array('status' => $status),
+            array('status' => absint($status)),
             array('id' => $id),
-            array('%s'),
+            array('%d'),
             array('%d')
         );
     }

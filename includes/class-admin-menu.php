@@ -4,6 +4,12 @@ if (!defined('ABSPATH')) {
 }
 
 class IntegratedPopup_AdminMenu {
+    private $database;
+    private $api_client;
+    public function __construct() {
+        $this->database = new IntegratedPopup_Database();
+        $this->api_client = new IntegratedPopup_ApiClient();
+    }
     public function add_menu_pages() {
         add_menu_page(
             'Configuración de Popups',
@@ -35,10 +41,12 @@ class IntegratedPopup_AdminMenu {
     }
 
     public function render_main_page() {
+        $popups = $this->database->get_all_popups();
         include INTEGRATED_POPUP_PATH . 'templates/admin/main-page.php';
     }
 
     public function render_new_page() {
+
         include INTEGRATED_POPUP_PATH . 'templates/admin/new-popup.php';
     }
 

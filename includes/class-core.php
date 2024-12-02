@@ -20,22 +20,18 @@ class IntegratedPopup_Core {
     }
 
     private function load_dependencies() {
-        // Inicializar componentes principales
         $this->loader = new IntegratedPopup_Loader();
         $this->database = new IntegratedPopup_Database();
         $this->admin = new IntegratedPopup_Admin($this->version);
         $this->admin_menu = new IntegratedPopup_AdminMenu();
-
-        // Verificar que todas las clases se hayan cargado correctamente
-        if (!$this->loader || !$this->database || !$this->admin || !$this->admin_menu) {
-            error_log('Error: No se pudieron cargar todas las dependencias del plugin Integrated Popup');
-            return;
-        }
     }
 
     private function setup_admin() {
-        if ($this->admin && $this->admin_menu) {
+        if ($this->admin) {
             $this->loader->add_action('admin_enqueue_scripts', $this->admin, 'enqueue_admin_scripts');
+        }
+        
+        if ($this->admin_menu) {
             $this->loader->add_action('admin_menu', $this->admin_menu, 'add_menu_pages');
         }
     }
@@ -46,9 +42,7 @@ class IntegratedPopup_Core {
     }
 
     public function run() {
-        if ($this->loader) {
-            $this->loader->run();
-        }
+        $this->loader->run();
     }
 
     public function enqueue_frontend_scripts() {
